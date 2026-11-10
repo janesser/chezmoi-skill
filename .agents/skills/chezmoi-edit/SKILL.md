@@ -32,6 +32,7 @@ Edit a file where it lives (its target location), then commit the result into ch
    Detection of the encrypted case (run before step 3):
    - `chezmoi add --dry-run --no-tty <target> 2>&1 | grep -q "remove encrypted attribute"` — if it matches, the target is managed by an encrypted source entry.
 
+   Present the chosen command to the user and ask for confirmation before running it.
 4. **Review.** Always show the diff to the user, then ask for confirmation before committing:
    - `git diff HEAD` (in the source dir) — displayed every time, even when empty ("no changes").
    - New files show up in `git status --porcelain | grep '??'` but not in the diff — display them too.
