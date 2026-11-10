@@ -19,6 +19,7 @@ Each skill is a directory with its own `SKILL.md`, so Pi advertises it separatel
 | `/skill:chezmoi-add <file>` | Add a file → preview → commit → push |
 | `/skill:chezmoi-review` | Review your setup with suggestions (incl. script order) |
 | `/skill:chezmoi-apply [target]` | Apply pending changes, optionally scoped to a path |
+| `/skill:chezmoi-edit <file>` | Edit at target location → `chezmoi add` (encryption preserved) → `git diff HEAD` review |
 
 ## Principles shared by all six
 
@@ -33,11 +34,12 @@ Each skill is a directory with its own `SKILL.md`, so Pi advertises it separatel
 ├── SKILL.md                    # This file — the bundle landing page
 ├── README.md                   # Installation & usage docs
 ├── references/pi-skills.md     # Pi Agent compatibility reference
-└── .agents/skills/<name>/      # One directory per skill (six total)
+└── .agents/skills/<name>/      # One directory per skill (seven total)
     ├── chezmoi-status/SKILL.md
     ├── chezmoi-init/SKILL.md
     ├── chezmoi-update/SKILL.md
     ├── chezmoi-add/SKILL.md
+    ├── chezmoi-edit/SKILL.md
     ├── chezmoi-review/SKILL.md
     └── chezmoi-apply/SKILL.md
 ```
@@ -51,7 +53,7 @@ Each skill installs into its own directory — see [README.md](README.md) for th
 Every skill lints clean against the Agent Skills spec:
 
 ```bash
-skillmd lint .agents/skills/         # 6 clean · avg score 98-100/100
+skillmd lint .agents/skills/         # 7 clean · avg score 100/100
 skillmd scan .agents/skills/         # docs_only — no scripts executed
 ```
 
