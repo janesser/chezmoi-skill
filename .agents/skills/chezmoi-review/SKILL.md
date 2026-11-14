@@ -10,11 +10,13 @@ Reviews your current dotfile setup and suggests improvements. This is where the 
 
 ## Script ordering analysis
 
-In addition to reviewing files, inspect `.chezmoiscripts/` execution order. First present a **sequential list of what chezmoi would execute** (numbered by phase then name), then determine why each script runs in its position (by `run_*` numbering convention) and question whether sequential order makes sense:
+In addition to reviewing files, inspect `.chezmoiscripts/` execution order. First present a **sequential list of what chezmoi would execute** (numbered by phase then name), then determine why each script runs in its position and question whether sequential order makes sense:
 
 - Are dependencies satisfied by the sequence? (e.g., a cleanup script that removes what an install script created)
-- Does the ordering follow the convention (`run_0_*` → `run_once_1_*` … `run_9_*`)?
+- Does the ordering follow the convention — `run_before_*` first, targets applied, `run_after_*` last, with numeric prefixes (`00`, `9`) encoding order lexicographically within each phase?
 - Do scripts at a given position actually perform work consistent with that phase?
+
+When reviewing a userspace systemd unit, expect the pattern from `chezmoi-install`: prerequisites in `run_once_before_00_*`, the unit file and config as `dot_file`s, activation in `run_after_00_enable_<app>.sh` via `systemctl --user enable <app> --now`, and cleanup in `run_after_9_cleanup_<app>.sh`.
 
 Report findings as: `[ORDER] <finding>` — e.g., "[ORDER] run_9_cleanup_uv.sh runs after install but uv is installed in run_once_0_python_tools_install.sh"
 

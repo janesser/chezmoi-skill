@@ -1,6 +1,6 @@
 # chezmoi — Dotfile Management Skill Bundle
 
-Seven focused agent skills that together cover the full workflow for managing dotfiles with [chezmoi](https://www.chezmoi.io). Each has its own entry point in Pi Agent; they share principles and reference each other's docs.
+Eight focused agent skills that together cover the full workflow for managing dotfiles with [chezmoi](https://www.chezmoi.io). Each has its own entry point in Pi Agent; they share principles and reference each other's docs.
 
 ## Entry points
 
@@ -12,7 +12,8 @@ Seven focused agent skills that together cover the full workflow for managing do
 | `/skill:chezmoi-add <file>` | Add a file → preview → commit → push |
 | `/skill:chezmoi-review` | Review your setup with suggestions (incl. script order) |
 | `/skill:chezmoi-apply [target]` | Apply pending changes, optionally scoped to a path |
-| `/skill:chezmoi-edit <file>` | Edit at target location → `chezmoi add` (encryption preserved) → `git diff HEAD` review |
+| `/skill:chezmoi-install <app>` | Install lifecycle — prerequisites by `run_once`, activation by `run_after`, cleanup by `run_9_cleanup_*` |
+| `/skill:chezmoi-refactor <target>` | Bring unmanaged setup under chezmoi management — file edit at target, or userspace systemd service setup |
 
 The skill bundle discovers your current state at runtime — it knows nothing about your setup until it reads it. Nothing is written without your explicit confirmation.
 
@@ -21,7 +22,7 @@ The skill bundle discovers your current state at runtime — it knows nothing ab
 The bundle follows the [Agent Skills specification](https://agentskills.io/specification) (`SKILL.md` with YAML frontmatter + Markdown body), so it works across multiple agents. Each skill installs into its own directory:
 
 ```bash
-for s in status init update add review apply edit; do
+for s in status init update add review apply install refactor; do
   mkdir -p ~/.agents/skills/chezmoi-$s
   cp ~/projs/chezmoi-skill/.agents/skills/chezmoi-$s/SKILL.md ~/.agents/skills/chezmoi-$s/SKILL.md
 done
@@ -55,14 +56,15 @@ Install into the agent's own skills directory. The `SKILL.md` follows the open s
 ├── SKILL.md                    # This file — the bundle landing page
 ├── README.md                   # This file — installation & usage docs
 ├── references/pi-skills.md     # Pi Agent compatibility reference
-└── .agents/skills/<name>/      # One directory per skill (seven total)
+└── .agents/skills/<name>/      # One directory per skill (eight total)
     ├── chezmoi-status/SKILL.md
     ├── chezmoi-init/SKILL.md
     ├── chezmoi-update/SKILL.md
     ├── chezmoi-add/SKILL.md
-    ├── chezmoi-edit/SKILL.md
     ├── chezmoi-review/SKILL.md
-    └── chezmoi-apply/SKILL.md
+    ├── chezmoi-apply/SKILL.md
+    ├── chezmoi-install/SKILL.md
+    └── chezmoi-refactor/SKILL.md
 ```
 
 ## Validation
@@ -70,7 +72,7 @@ Install into the agent's own skills directory. The `SKILL.md` follows the open s
 Every skill lints clean against the Agent Skills spec:
 
 ```bash
-skillmd lint .agents/skills/         # 7 clean · avg score 100/100
+skillmd lint .agents/skills/         # 8 clean · avg score 100/100
 skillmd scan .agents/skills/         # docs_only — no scripts executed
 ```
 
