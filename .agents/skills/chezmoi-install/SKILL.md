@@ -6,7 +6,26 @@ license: UNKNOWN
 
 # `/skill:chezmoi-install <app>` — Manage the Install Lifecycle
 
-Handle one software dependency from install through upgrade and cleanup using chezmoi's script phases and lexicographic ordering.
+Handle one software dependency from install through upgrade and cleanup using chezmoi's script phases and lexicographic ordering. Start by reading present state, then verify how each piece is managed.
+
+## Pre-check (read-only)
+
+Report what exists on the machine and whether each piece follows the pattern:
+
+| Piece | Present | Managed by chezmoi? |
+|---|---|---|
+| Binary / package | `command -v my-app` | — |
+| Unit file | `ls ~/.config/systemd/user/app.service` | is it a `dot_file` in the source dir? |
+| App config | `ls ~/.config/app/config.toml` | is it a `dot_file` in the source dir? |
+| Prereqs script | `ls .chezmoiscripts/run_once_before_00_*` | matches `run_once_before_00_<app>_prereqs.sh`? |
+| Activation script | `ls .chezmoiscripts/run_after_00_*` | matches `run_after_00_enable_<app>.sh`, uses `systemctl --user enable app --now`? |
+| Cleanup script | `ls .chezmoiscripts/run_after_9_cleanup_*` | matches `run_after_9_cleanup_<app>.sh`? |
+
+If a piece is missing, it's added by the pattern below. If it exists but isn't managed by chezmoi, move it (edit at target, then `chezmoi add`) before proceeding. Unit state is read-only here: `systemctl --user is-enabled my-app`, `systemctl --user status my-app`.
+
+## Findings
+
+Present but not managed → migrate first (edit at target, `chezmoi add`). Missing → follow the pattern below. Fully managed → only upgrades: write a new `run_once_00` script and adjust `dot_file`s, then `chezmoi apply` handles the rest.
 
 ## The pattern
 
@@ -59,6 +78,10 @@ rm -rf ~/.cache/my-app-old 2>/dev/null || true
 ## Upgrades
 
 `run_once_*` is keyed by content hash, not filename — changing the script's contents makes it run again on every machine. An upgrade path is therefore: write the new `run_once_00` script (new version), add/adjust `dot_file`s as needed, and let the next `chezmoi apply` handle the transition. The cleanup step removes stale state from the previous version.
+
+## Self-manage
+
+The skill bundle itself is kept in sync by a chezmoi script in your source dir — `.chezmoiscripts/run_once_5_install_skills.sh` (the repo's git remote, `git@github.com:janesser/chezmoi-skill.git`, from `git remote -v`). It settles next to the `aitools` group, since skills are agent infrastructure too. It fetches the latest source and copies each skill into `~/.agents/skills/<name>/`, with OpenCode's symlinks in `~/.codex/skills/` re-created. Idempotent: on the next `chezmoi apply` it refreshes nothing but itself.
 
 ## Guard
 
