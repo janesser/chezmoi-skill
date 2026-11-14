@@ -1,11 +1,11 @@
 ---
 name: chezmoi
-description: "A bundle of eight agent skills for managing dotfiles with chezmoi — status, init, update, add, review, apply, install and refactor. Each action is its own /skill: entrypoint. Use when you want to manage dotfiles with chezmoi: setup, sync, add files, or review your config."
+description: "A bundle of nine agent skills for managing dotfiles with chezmoi — status, init, update, add, review, apply, install, refactor and uninstall. Each action is its own /skill: entrypoint. Use when you want to manage dotfiles with chezmoi: setup, sync, add files, or review your config."
 ---
 
 # Chezmoi Dotfile Management Skill Bundle
 
-Eight focused skills that together cover the full chezmoi workflow. Each has its own entry point in Pi Agent; they share principles and reference each other's docs.
+Nine focused skills that together cover the full chezmoi workflow. Each has its own entry point in Pi Agent; they share principles and reference each other's docs.
 
 ## Entry points
 
@@ -21,6 +21,7 @@ Each skill is a directory with its own `SKILL.md`, so Pi advertises it separatel
 | `/skill:chezmoi-apply [target]` | Apply pending changes, optionally scoped to a path |
 | `/skill:chezmoi-install <app>` | Install lifecycle — prerequisites by `run_once`, activation by `run_after`, cleanup by `run_9_cleanup_*` |
 | `/skill:chezmoi-refactor <target>` | Bring unmanaged setup under chezmoi management — file edit at target, or userspace systemd service setup |
+| `/skill:chezmoi-uninstall <app>` | Uninstall software managed with chezmoi — discover present state, deploy uninstallers hooked into cleanup |
 
 ## Principles shared by all eight
 
@@ -35,7 +36,7 @@ Each skill is a directory with its own `SKILL.md`, so Pi advertises it separatel
 ├── SKILL.md                    # This file — the bundle landing page
 ├── README.md                   # Installation & usage docs
 ├── references/pi-skills.md     # Pi Agent compatibility reference
-└── .agents/skills/<name>/      # One directory per skill (eight total)
+└── .agents/skills/<name>/      # One directory per skill (nine total)
     ├── chezmoi-status/SKILL.md
     ├── chezmoi-init/SKILL.md
     ├── chezmoi-update/SKILL.md
@@ -43,7 +44,8 @@ Each skill is a directory with its own `SKILL.md`, so Pi advertises it separatel
     ├── chezmoi-review/SKILL.md
     ├── chezmoi-apply/SKILL.md
     ├── chezmoi-install/SKILL.md
-    └── chezmoi-refactor/SKILL.md
+    ├── chezmoi-refactor/SKILL.md
+    └── chezmoi-uninstall/SKILL.md
 ```
 
 ## Installing the bundle
@@ -55,7 +57,7 @@ Each skill installs into its own directory — see [README.md](README.md) for th
 Every skill lints clean against the Agent Skills spec:
 
 ```bash
-skillmd lint .agents/skills/         # 8 clean · avg score 100/100
+skillmd lint .agents/skills/         # 9 clean · avg score 100/100
 skillmd scan .agents/skills/         # docs_only — no scripts executed
 ```
 
